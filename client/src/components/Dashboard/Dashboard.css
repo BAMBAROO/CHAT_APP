@@ -1,0 +1,109 @@
+/* Styling for the navbar */
+* {
+  font-family: "Roboto", sans-serif;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f8f8f8;
+  color: #333;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 20px;
+}
+
+.navbar-menu {
+  margin-right: 20px;
+}
+
+.navbar-menu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+.navbar-menu li {
+  margin-left: 15px;
+}
+
+.navbar-menu li a {
+  color: #333;
+  text-decoration: none;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.navbar-menu li a:hover {
+  color: #ffc107;
+}
+
+/* Styling for the contact list */
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contact-list-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.contact-info {
+  flex-grow: 1;
+}
+
+.contact-name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.contact-location {
+  color: #777;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.contact-location span {
+  margin-right: 5px;
+}
+
+.contact-action-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.contact-action-buttons button {
+  margin-left: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.chat-button {
+  background-color: #008cba;
+  color: white;
+}
+
+.add-button:hover,
+.chat-button:hover {
+  background-color: #45a049;
+}
