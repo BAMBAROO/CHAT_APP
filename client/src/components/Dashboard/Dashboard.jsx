@@ -80,20 +80,6 @@ function Home() {
     });
   };
 
-  const contacts = [
-    {
-      name: "John Doe",
-      country: "USA",
-      city: "New York",
-    },
-    {
-      name: "Jane Smith",
-      country: "Canada",
-      city: "Toronto",
-    },
-  ];
-
-  // create dashborad for list live visitors
   return (
     <>
       <nav className="navbar" style={{ marginBottom: "10px" }}>
