@@ -36,14 +36,14 @@ function Home() {
         city: res.data.geoplugin_city,
         ip: res.data.geoplugin_request,
       };
-      // if (
-      //   data.name !== undefined &&
-      //   data.country !== undefined &&
-      //   data.city !== undefined &&
-      //   data.ip !== undefined
-      // ) {
+      if (
+        data.name !== undefined &&
+        data.country !== undefined &&
+        data.city !== undefined &&
+        data.ip !== undefined
+      ) {
         socket.emit("new_visitor", data);
-      // }
+      }
     });
   }
 
