@@ -1,5 +1,6 @@
 import axios from "axios";
 import io from "socket.io-client";
+import jwt_decode from "jwt-decode";
 import { useEffect, useState } from "react";
 import "./Dashboard.css";
 import Cookies from "js-cookie";
@@ -12,32 +13,39 @@ function Home() {
 
   const navigate = useNavigate();
   let count = 0;
+  let decoded;
 
   useEffect(() => {
     count++;
     if (count == 2) {
-      // call api for get accessToken
-      axios.get("http://geoplugin.net/json.gp").then((res) =>
-        socket.emit("new_visitor", {
-          ip: res.data.geoplugin_request,
-          country: res.data.geoplugin_countryName,
-          city: res.data.geoplugin_city,
-        })
-      );
+      refreshToken();
     }
     socket.on("visitors", (res) => {
       setVisitors(res);
     });
-  }, [ ]);
+  }, []);
 
-  // const refreshToken = (e) => {
-  //   e.preventDefault();
-  //   axios
-  //     .get("http://localhost:8000/token", { withCredentials: true })
-  //     .then((res) => setToken(res.data.accessToken));
-  // };
+  function getInfo() {
+    axios.get("http://geoplugin.net/json.gp").then(async (res) => {
+      const data = {
+        name: decoded.name === undefined ? "anonymous" : decoded.name,
+        country: res.data.geoplugin_countryName,
+        city: res.data.geoplugin_city,
+        ip: res.data.geoplugin_request,
+      };
+      socket.emit("new_visitor", data);
+    });
+  }
 
-  // const getFriends = (e) => {
+  function refreshToken() {
+    axios
+      .get("http://localhost:8000/token", { withCredentials: true })
+      .then((res) => (decoded = jwt_decode(res.data.accessToken)))
+      .catch((err) => alert(err))
+      .finally(() => getInfo());
+  }
+
+  // function getFriends(e) {
   //   e.preventDefault();
   //   const config = {
   //     headers: {
@@ -88,30 +96,44 @@ function Home() {
             <li>
               <a href="#">Friends</a>
             </li>
+            <li>
+              <a href="#">Log Out</a>
+            </li>
           </ul>
         </div>
       </nav>
       <ul className="contact-list">
-        {contacts.map((contact, index) => (
-          <li key={index} className="contact-list-item">
-            <div className="contact-info">
-              <span className="contact-name">{contact.name}</span>
-              <div className="contact-location">
-                <span>{contact.country}</span>
-                <span>{contact.city}</span>
+        {visitors &&
+          visitors.map((contact, index) => (
+            <li key={index} className="contact-list-item">
+              <div className="contact-info">
+                <span className="contact-name">{contact.name}</span>
+                <div className="contact-location">
+                  <span>{contact.country}</span>
+                  <span>{contact.city}</span>
+                </div>
               </div>
-            </div>
-            <div className="contact-action-buttons">
-              <button className="add-button">Tambah</button>
-              <button className="chat-button">Chat</button>
-            </div>
-          </li>
-        ))}
+              <div className="contact-action-buttons">
+                <button className="add-button">Tambah</button>
+                <button className="chat-button">Chat</button>
+              </div>
+            </li>
+          ))}
       </ul>
       <h1>Home</h1>
-      <button onClick={() => console.log(visitors)}>check visitors</button>
-      <button onClick={() => logout()}>logou</button>
-      {/* <button onClick={() => deleteSession()}>delete</button> */}
+      <button onClick={() => console.log(contacts)}>check visitors</button>
+      <button
+        onClick={() => {
+          logout();
+          socket.disconnect();
+        }}
+      >
+        logou
+      </button>
+      {/* <button onClick={() => getFriends()}>friends</button> */}
+      <button onClick={() => console.log(visitors.map((x, i) => x.country))}>
+        decode
+      </button>
     </>
   );
 }

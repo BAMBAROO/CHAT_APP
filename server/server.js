@@ -38,6 +38,7 @@ function visitors() {
 
 function emitVisitors() {
   const users = visitors()
+  console.log(users)
   if (users.length != 0) {
     io.emit("visitors", users);
   }

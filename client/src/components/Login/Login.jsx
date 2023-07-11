@@ -27,7 +27,6 @@ const Login = () => {
     };
     axios.post("http://localhost:8000/login", data, config).then((res) => {
       if (res.statusText === "OK") {
-        console.log(res)
         Cookies.set("logged", "OK");
         navigate("/");
       }
