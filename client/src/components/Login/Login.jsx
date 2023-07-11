@@ -31,7 +31,6 @@ const Login = () => {
         navigate("/");
       }
     }).catch((error) => alert(error.response.data.message));
-    console.log("Full Data User:", data);
   };
 
   return (

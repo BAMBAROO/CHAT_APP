@@ -19,6 +19,9 @@ function Home() {
     count++;
     if (count == 2) {
       refreshToken();
+      if (socket.connected == false) {
+        socket.connect()
+      }
     }
     socket.on("visitors", (res) => {
       setVisitors(res);
@@ -33,7 +36,14 @@ function Home() {
         city: res.data.geoplugin_city,
         ip: res.data.geoplugin_request,
       };
-      socket.emit("new_visitor", data);
+      // if (
+      //   data.name !== undefined &&
+      //   data.country !== undefined &&
+      //   data.city !== undefined &&
+      //   data.ip !== undefined
+      // ) {
+        socket.emit("new_visitor", data);
+      // }
     });
   }
 
@@ -86,8 +96,8 @@ function Home() {
   // create dashborad for list live visitors
   return (
     <>
-      <nav className="navbar">
-        <div className="navbar-brand">Merk</div>
+      <nav className="navbar" style={{ marginBottom: "10px" }}>
+        <div className="navbar-brand">BAMBAROO</div>
         <div className="navbar-menu">
           <ul>
             <li>
@@ -97,11 +107,21 @@ function Home() {
               <a href="#">Friends</a>
             </li>
             <li>
-              <a href="#">Log Out</a>
+              <a
+                href="#"
+                onClick={() => {
+                  logout();
+                  socket.disconnect();
+                }}
+              >
+                Log Out
+              </a>
             </li>
           </ul>
         </div>
       </nav>
+      <span className="contact-name">live visitors</span>
+      <hr />
       <ul className="contact-list">
         {visitors &&
           visitors.map((contact, index) => (
@@ -114,26 +134,21 @@ function Home() {
                 </div>
               </div>
               <div className="contact-action-buttons">
-                <button className="add-button">Tambah</button>
+                <button
+                  className="add-button"
+                  onClick={() => {
+                    console.log(contact.name);
+                  }}
+                >
+                  Tambah
+                </button>
                 <button className="chat-button">Chat</button>
               </div>
             </li>
           ))}
       </ul>
       <h1>Home</h1>
-      <button onClick={() => console.log(contacts)}>check visitors</button>
-      <button
-        onClick={() => {
-          logout();
-          socket.disconnect();
-        }}
-      >
-        logou
-      </button>
-      {/* <button onClick={() => getFriends()}>friends</button> */}
-      <button onClick={() => console.log(visitors.map((x, i) => x.country))}>
-        decode
-      </button>
+      <button onClick={() => console.log(Cookies.get("io"))}>check io</button>
     </>
   );
 }

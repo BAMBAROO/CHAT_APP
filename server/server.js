@@ -37,7 +37,7 @@ function visitors() {
 }
 
 function emitVisitors() {
-  const users = visitors()
+  const users = visitors().filter(data => data !== undefined)
   console.log(users)
   if (users.length != 0) {
     io.emit("visitors", users);
