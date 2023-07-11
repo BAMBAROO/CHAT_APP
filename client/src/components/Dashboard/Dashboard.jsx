@@ -10,17 +10,18 @@ const socket = io("http://localhost:8000");
 
 function Home() {
   const [visitors, setVisitors] = useState([]);
+  const [token, setToken] = useState("");
+  const [decoded, setDecoded] = useState("");
 
   const navigate = useNavigate();
   let count = 0;
-  let decoded;
 
   useEffect(() => {
     count++;
     if (count == 2) {
       refreshToken();
       if (socket.connected == false) {
-        socket.connect()
+        socket.connect();
       }
     }
     socket.on("visitors", (res) => {
@@ -28,10 +29,10 @@ function Home() {
     });
   }, []);
 
-  function getInfo() {
+  function getInfo(decoded) {
     axios.get("http://geoplugin.net/json.gp").then(async (res) => {
       const data = {
-        name: decoded.name === undefined ? "anonymous" : decoded.name,
+        name: decoded.name,
         country: res.data.geoplugin_countryName,
         city: res.data.geoplugin_city,
         ip: res.data.geoplugin_request,
@@ -50,25 +51,30 @@ function Home() {
   function refreshToken() {
     axios
       .get("http://localhost:8000/token", { withCredentials: true })
-      .then((res) => (decoded = jwt_decode(res.data.accessToken)))
-      .catch((err) => alert(err))
-      .finally(() => getInfo());
+      .then((res) => {
+        setToken(res.data.accessToken);
+        setDecoded(jwt_decode(res.data.accessToken));
+        getInfo(jwt_decode(res.data.accessToken));
+      })
+      .catch((err) => alert(err));
+    // .finally(() => getInfo());
   }
 
-  // function getFriends(e) {
-  //   e.preventDefault();
-  //   const config = {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //     withCredentials: true,
-  //   };
-  //   axios
-  //     .get("http://localhost:8000/user", config)
-  //     .then((res) => console.log(res));
-  // };
+  function getFriends(e) {
+    e.preventDefault();
+    refreshToken();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    };
+    axios
+      .get("http://localhost:8000/user", config)
+      .then((res) => console.log(res));
+  }
 
-  const logout = () => {
+  function logout() {
     const config = {
       withCredentials: true,
     };
@@ -78,7 +84,12 @@ function Home() {
         navigate("/login");
       }
     });
-  };
+  }
+
+  function addFriends(user) {
+    console.log(decoded.name);
+    console.log(user)
+  }
 
   return (
     <>
@@ -123,10 +134,10 @@ function Home() {
                 <button
                   className="add-button"
                   onClick={() => {
-                    console.log(contact.name);
+                    addFriends(contact.name);
                   }}
                 >
-                  Tambah
+                  Add
                 </button>
                 <button className="chat-button">Chat</button>
               </div>

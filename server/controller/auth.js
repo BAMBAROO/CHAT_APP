@@ -29,7 +29,8 @@ export const register = async (req, res) => {
     const { name, email, password } = req.body;
     let existEmail = await User.findOne({ email: email });
     let existName = await User.findOne({ name: name });
-    if (existEmail || existName) return res.status(401).json({ message: "email or name has been used" });
+    if (existEmail || existName)
+      return res.status(401).json({ message: "email or name has been used" });
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     console.log({ name, email, hashedPassword });
@@ -96,9 +97,18 @@ export const logout = async (req, res) => {
   }
 };
 
-export const addfriends = async (req, res) => {
+export const addFriends = async (req, res) => {
   try {
-    res.status(203).json({ message: "on development" });
+    const { name, friend } = req.body;
+    const user = await User.findOne({ name: name });
+    const userFriend = await User.findOne({ name: friend });
+    if (!userFriend || !user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+    console.log({ user });
+    user.friends.push({ name: userFriend.name });
+    await user.save();
+    res.status(203).json({ message: "on testing" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "something went wrong" });
