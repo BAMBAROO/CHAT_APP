@@ -10,7 +10,6 @@ const socket = io("http://localhost:8000");
 
 function Home() {
   const [visitors, setVisitors] = useState([]);
-  const [token, setToken] = useState("");
   const [decoded, setDecoded] = useState("");
 
   const navigate = useNavigate();
@@ -19,7 +18,7 @@ function Home() {
   useEffect(() => {
     count++;
     if (count == 2) {
-      refreshToken();
+      refreshToken("getInfo");
       if (socket.connected == false) {
         socket.connect();
       }
@@ -48,21 +47,21 @@ function Home() {
     });
   }
 
-  function refreshToken() {
+  function refreshToken(code) {
     axios
       .get("http://localhost:8000/token", { withCredentials: true })
       .then((res) => {
-        setToken(res.data.accessToken);
         setDecoded(jwt_decode(res.data.accessToken));
-        getInfo(jwt_decode(res.data.accessToken));
+        if (code === "getFriends") {
+          getFriends(res.data.accessToken);
+        } else if (code === "getInfo") {
+          getInfo(jwt_decode(res.data.accessToken));
+        }
       })
       .catch((err) => alert(err));
-    // .finally(() => getInfo());
   }
 
-  function getFriends(e) {
-    e.preventDefault();
-    refreshToken();
+  function getFriends(token) {
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -71,7 +70,7 @@ function Home() {
     };
     axios
       .get("http://localhost:8000/user", config)
-      .then((res) => console.log(res));
+      .then((res) => console.log(res.data.friends));
   }
 
   function logout() {
@@ -87,8 +86,9 @@ function Home() {
   }
 
   function addFriends(user) {
-    console.log(decoded.name);
-    console.log(user)
+    if (user === decoded.name) {
+      return alert("This is You!");
+    }
   }
 
   return (
@@ -145,7 +145,7 @@ function Home() {
           ))}
       </ul>
       <h1>Home</h1>
-      <button onClick={() => console.log(Cookies.get("io"))}>check io</button>
+      <button onClick={() => refreshToken("getFriends")}>friends</button>
     </>
   );
 }
