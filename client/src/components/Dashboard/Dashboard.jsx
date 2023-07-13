@@ -10,7 +10,7 @@ const socket = io("http://localhost:8000");
 
 function Home() {
   const [visitors, setVisitors] = useState([]);
-  const [decoded, setDecoded] = useState("");
+  // const [decoded, setDecoded] = useState("");
 
   const navigate = useNavigate();
   let count = 0;
@@ -47,13 +47,14 @@ function Home() {
     });
   }
 
-  function refreshToken(code) {
+  function refreshToken(code, to) {
     axios
       .get("http://localhost:8000/token", { withCredentials: true })
       .then((res) => {
-        setDecoded(jwt_decode(res.data.accessToken));
-        if (code === "getFriends") {
-          getFriends(res.data.accessToken);
+        // setDecoded(jwt_decode(res.data.accessToken));
+        console.log(jwt_decode(res.data.accessToken));
+        if (code === "privateChat") {
+          privateChat(jwt_decode(res.data.accessToken), to);
         } else if (code === "getInfo") {
           getInfo(jwt_decode(res.data.accessToken));
         }
@@ -61,16 +62,11 @@ function Home() {
       .catch((err) => alert(err));
   }
 
-  function getFriends(token) {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true,
-    };
-    axios
-      .get("http://localhost:8000/user", config)
-      .then((res) => console.log(res.data.friends));
+  function privateChat(token,to) {
+    if (token.name === to) {
+      return alert("this is you")
+    }
+    navigate(`/private?from=${token.name}&to=${to}`)
   }
 
   function logout() {
@@ -85,12 +81,6 @@ function Home() {
     });
   }
 
-  function addFriends(user) {
-    if (user === decoded.name) {
-      return alert("This is You!");
-    }
-  }
-
   return (
     <>
       <nav className="navbar" style={{ marginBottom: "10px" }}>
@@ -101,7 +91,14 @@ function Home() {
               <a href="#">Dashboard</a>
             </li>
             <li>
-              <a href="#">Friends</a>
+              <a
+                href="#"
+                onClick={() => {
+                  refreshToken("getFriends");
+                }}
+              >
+                Friends
+              </a>
             </li>
             <li>
               <a
@@ -132,22 +129,26 @@ function Home() {
               </div>
               <div className="contact-action-buttons">
                 <button
-                  className="add-button"
+                  className="chat-button"
                   onClick={() => {
-                    addFriends(contact.name);
+                    refreshToken("privateChat", contact.name);
                   }}
                 >
-                  Add
+                  Chat
                 </button>
-                <button className="chat-button">Chat</button>
               </div>
             </li>
           ))}
       </ul>
       <h1>Home</h1>
-      <button onClick={() => refreshToken("getFriends")}>friends</button>
+      <button
+        onClick={() => {
+          refreshToken("getFriends");
+        }}
+      >
+        friends
+      </button>
     </>
   );
 }
-
 export default Home;

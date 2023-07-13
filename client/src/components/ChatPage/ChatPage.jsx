@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import "./ChatPage.css";
+import { useLocation } from "react-router-dom";
 
 const ChatBox = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef(null);
+  const location = useLocation();
+  const me = new URLSearchParams(location.search).get("from")
+  const people = new URLSearchParams(location.search).get("to")
 
   const handleChange = (event) => {
     setNewMessage(event.target.value);
@@ -41,7 +45,7 @@ const ChatBox = () => {
     <div className="chatbox-container">
     <div className="chatbox">
       <div className="chatbox-header">
-        <div className="chatbox-title">John Doe</div>
+        <div className="chatbox-title">{me} -- {people}</div>
         <button className="close-button">&#10005;</button>
       </div>
       <div className="chatbox-content">

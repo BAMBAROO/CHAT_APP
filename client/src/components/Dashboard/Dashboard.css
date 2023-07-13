@@ -93,17 +93,11 @@
   transition: background-color 0.3s ease;
 }
 
-.add-button {
-  background-color: #4caf50;
-  color: white;
-}
-
 .chat-button {
   background-color: #008cba;
   color: white;
 }
 
-.add-button:hover,
 .chat-button:hover {
   background-color: #45a049;
 }

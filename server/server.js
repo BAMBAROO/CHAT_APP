@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import http from "http";
 import mongoose from "mongoose";
 import cors from "cors";
-// import User from "./model/Users.js";
+import User from "./model/Users.js";
 import router from "./routes/router.js";
 
 const app = express();
@@ -37,8 +37,8 @@ function visitors() {
 }
 
 function emitVisitors() {
-  const users = visitors().filter(data => data !== undefined)
-  console.log(users)
+  const users = visitors().filter((data) => data !== undefined);
+  console.log(users);
   if (users.length != 0) {
     io.emit("visitors", users);
   }
@@ -47,7 +47,7 @@ function emitVisitors() {
 io.on("connection", (socket) => {
   socket.on("new_visitor", (arg) => {
     if (arg !== undefined) {
-      console.log("halo")
+      console.log("halo");
       socket.user = arg;
       emitVisitors();
     }
@@ -59,24 +59,21 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    emitVisitors()
+    emitVisitors();
     console.log("someone just disconnect");
   });
 });
 
 mongoose
-  .connect(process.env.MONGO_URI, {
-    dbName: "chat_users",
-  })
-  .then(() => {
+  .connect(process.env.MONGO_URI, { dbName: "user_account" })
+  .then(async () => {
     console.log("berhasil terkoneksi ke database");
-    // await User.create({
-    //   name: "bryan",
-    //   email: "bryan@gmail.com",
-    //   password: "asdasd",
-    //   refreshToken: "asdasdasd",
-    //   friends: [],
-    // });
+    await User.create({
+      name: "bryan",
+      email: "bryan@gmail.com",
+      password: "bryan",
+      refreshToken: "",
+    });
     server.listen(8000, () => {
       console.log("running at port 8000");
     });
