@@ -54,6 +54,9 @@ function Home() {
         // setDecoded(jwt_decode(res.data.accessToken));
         console.log(jwt_decode(res.data.accessToken));
         if (code === "privateChat") {
+          if (res.statusText === "Forbidden") {
+            logout();
+          }
           privateChat(jwt_decode(res.data.accessToken), to);
         } else if (code === "getInfo") {
           getInfo(jwt_decode(res.data.accessToken));
@@ -62,11 +65,11 @@ function Home() {
       .catch((err) => alert(err));
   }
 
-  function privateChat(token,to) {
+  function privateChat(token, to) {
     if (token.name === to) {
-      return alert("this is you")
+      return alert("this is you");
     }
-    navigate(`/private?from=${token.name}&to=${to}`)
+    navigate(`/private?from=${token.name}&to=${to}`);
   }
 
   function logout() {
@@ -74,7 +77,13 @@ function Home() {
       withCredentials: true,
     };
     axios.delete("http://localhost:8000/logout", config).then((res) => {
+      console.log(res);
       if (res.statusText === "OK") {
+        Cookies.remove("logged");
+        navigate("/login");
+      }
+      if (res.response.statusText) {
+        alert("something went wrong, please relog!");
         Cookies.remove("logged");
         navigate("/login");
       }
@@ -88,11 +97,16 @@ function Home() {
         <div className="navbar-menu">
           <ul>
             <li>
-              <a href="#">Dashboard</a>
+              <a
+                onClick={() => {
+                  navigate("/");
+                }}
+              >
+                Dashboard
+              </a>
             </li>
             <li>
               <a
-                href="#"
                 onClick={() => {
                   refreshToken("getFriends");
                 }}
@@ -102,7 +116,6 @@ function Home() {
             </li>
             <li>
               <a
-                href="#"
                 onClick={() => {
                   logout();
                   socket.disconnect();
