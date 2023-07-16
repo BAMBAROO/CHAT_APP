@@ -53,9 +53,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("message", (arg1, arg2, arg3) => {
-    console.log({ arg1, arg2, arg3 });
-    socket.broadcast.emit(arg2, arg3);
+  socket.on("message", (dari, ke, pesan) => {
+    console.log({ dari, ke, pesan });
+    socket.broadcast.emit(ke, pesan);
   });
 
   socket.on("disconnect", () => {

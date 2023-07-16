@@ -10,7 +10,6 @@ const socket = io("http://localhost:8000");
 
 function Home() {
   const [visitors, setVisitors] = useState([]);
-  // const [decoded, setDecoded] = useState("");
 
   const navigate = useNavigate();
   let count = 0;

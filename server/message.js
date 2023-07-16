@@ -1,10 +1,10 @@
-import { io } from "socket.io-client";
+import io from "socket.io-client";
 
-const socket = io("ws://localhost:5000");
+const socket = io("ws://localhost:8000");
 
-var key = process.argv[2]
-console.log(key)
-socket.on(key, (arg) => {
+var dari = process.argv[2]
+console.log(dari)
+socket.on(dari, (arg) => {
   console.log(arg)
 })
 process.stdin.resume();
@@ -13,7 +13,7 @@ process.stdin.on('data', (data) => {
   if (input === 'exit') {
     process.exit();
   } else {
-    socket.emit("message", key, process.argv[3], input)
+    socket.emit("message", dari, process.argv[3], input)
   }
 })
 const timeNow = new Date()
