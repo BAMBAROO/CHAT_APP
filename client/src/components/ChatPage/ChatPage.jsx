@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import "./ChatPage.scss";
 import { useLocation } from "react-router-dom";
 import io from "socket.io-client";
-// import ReactScrollbleFeed from "react-scrollable-feed";
 
 const ChatBox = () => {
   const [msg, setMsg] = useState("");
@@ -10,38 +9,41 @@ const ChatBox = () => {
     {
       from: "asd",
       message: "msg",
-      time: "time",
     },
   ]);
   const location = useLocation();
-  const me = new URLSearchParams(location.search).get("from");
-  const them = new URLSearchParams(location.search).get("to");
+  const me = location.state.from;
+  const them = location.state.to;
   const socket = io("http://localhost:8000");
   const inputMessage = useRef();
+  const messageView = useRef();
 
   let count;
 
   useEffect(() => {
     count++;
     if (count == 2) {
-      if (socket.connected == false) {
-        socket.connect();
-        console.log("done");
-      }
+      console.log(location.state)
     }
+    socket.on(me, (data) => {
+      setMessages((messageBaru) => [...messageBaru, data])
+    });
   }, []);
+
+  useEffect(() => {
+    messageView.current?.scrollIntoView()
+  },[messages])
 
   function enter() {
     if (msg !== "") {
-      console.log(msg);
-      setMessages([
-        ...messages,
-        {
-          from: me,
-          message: msg,
-        },
-      ]);
+      const data = {
+        from: me,
+        message: msg,
+      };
+      socket.emit("message", me, them, data);
+      setMessages(messages => [...messages, data]);
       inputMessage.current.value = "";
+      setMsg("");
     }
   }
 
@@ -54,7 +56,7 @@ const ChatBox = () => {
             Welcome! Remember to be kind to others&hellip;
           </div>
           <div className="chatbox">
-            <div className="messages-wrapper" style={{overflowY:"auto"}}>
+            <div className="messages-wrapper" style={{ overflowY: "auto" }}>
               <div className="status">Searching for a partner...</div>
               <div className="you message">
                 <div className="avatar"></div>
@@ -67,19 +69,24 @@ const ChatBox = () => {
                 <div className="text">hiii nama saya hunter</div>
               </div>
               {/* <ReactScrollbleFeed> */}
-                {messages &&
-                  messages.map((data) => {
-                    return (
-                      <>
-                        <div className="you message">
-                          <div className="avatar"></div>
-                          <div className="name">{data.from}</div>
-                          <div className="text">{data.message}</div>
-                        </div>
-                      </>
-                    );
-                  })}
+              {messages &&
+                messages.map((data) => {
+                  return (
+                    <>
+                      <div
+                        className={
+                          data.from === me ? "you message" : "them message"
+                        }
+                      >
+                        <div className="avatar"></div>
+                        <div className="name">{data.from}</div>
+                        <div className="text">{data.message}</div>
+                      </div>
+                    </>
+                  );
+                })}
               {/* </ReactScrollbleFeed> */}
+              <div ref={messageView} />
             </div>
           </div>
           <div className="reply">

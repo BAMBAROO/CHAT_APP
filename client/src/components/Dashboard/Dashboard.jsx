@@ -68,7 +68,12 @@ function Home() {
     if (token.name === to) {
       return alert("this is you");
     }
-    navigate(`/private?from=${token.name}&to=${to}`);
+    navigate('/private', {
+      state: {
+        from:token.name,
+        to:to
+      },
+    });
   }
 
   function logout() {
