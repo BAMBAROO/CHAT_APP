@@ -1,15 +1,14 @@
 import axios from "axios";
-import io from "socket.io-client";
 import jwt_decode from "jwt-decode";
 import { useEffect, useState } from "react";
 import "./Dashboard.css";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../Navbar/Navbar.jsx";
 
-const socket = io("http://localhost:8000");
-
-function Home() {
+function Dashboard(props) {
   const [visitors, setVisitors] = useState([]);
+  const socket = props.socket;
 
   const navigate = useNavigate();
   let count = 0;
@@ -50,8 +49,6 @@ function Home() {
     axios
       .get("http://localhost:8000/token", { withCredentials: true })
       .then((res) => {
-        // setDecoded(jwt_decode(res.data.accessToken));
-        console.log(jwt_decode(res.data.accessToken));
         if (code === "privateChat") {
           if (res.statusText === "Forbidden") {
             logout();
@@ -96,42 +93,8 @@ function Home() {
 
   return (
     <>
-      <nav className="navbar" style={{ marginBottom: "10px" }}>
-        <div className="navbar-brand">BAMBAROO</div>
-        <div className="navbar-menu">
-          <ul>
-            <li>
-              <a
-                onClick={() => {
-                  navigate("/");
-                }}
-              >
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a
-                onClick={() => {
-                  refreshToken("getFriends");
-                }}
-              >
-                Friends
-              </a>
-            </li>
-            <li>
-              <a
-                onClick={() => {
-                  logout();
-                  socket.disconnect();
-                }}
-              >
-                Log Out
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-      <span className="contact-name">live visitors</span>
+      <Navbar logout={logout} refreshToken={refreshToken} socket={socket}/>
+      <span className="contact-name" style={{color:"red"}}>live visitors</span>
       <hr />
       <ul className="contact-list">
         {visitors &&
@@ -168,4 +131,4 @@ function Home() {
     </>
   );
 }
-export default Home;
+export default Dashboard;

@@ -1,38 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 import "./ChatPage.scss";
-import { useLocation } from "react-router-dom";
-import io from "socket.io-client";
+import { useLocation, useNavigate } from "react-router-dom";
+import Navbar from "../Navbar/Navbar";
 
-const ChatBox = () => {
+const ChatBox = (props) => {
   const [msg, setMsg] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      from: "asd",
-      message: "msg",
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const location = useLocation();
   const me = location.state.from;
   const them = location.state.to;
-  const socket = io("http://localhost:8000");
+  const socket = props.socket;
   const inputMessage = useRef();
   const messageView = useRef();
+  const navigate = useNavigate();
 
-  let count;
+  let count = 0;
 
   useEffect(() => {
-    count++;
+    count = count + 1;
     if (count == 2) {
-      console.log(location.state)
+      socket.on(me, (data) => {
+        setMessages((messageBaru) => [...messageBaru, data])
+      });
     }
-    socket.on(me, (data) => {
-      setMessages((messageBaru) => [...messageBaru, data])
-    });
   }, []);
 
   useEffect(() => {
-    messageView.current?.scrollIntoView()
-  },[messages])
+    messageView.current?.scrollIntoView();
+  }, [messages]);
 
   function enter() {
     if (msg !== "") {
@@ -41,7 +36,7 @@ const ChatBox = () => {
         message: msg,
       };
       socket.emit("message", me, them, data);
-      setMessages(messages => [...messages, data]);
+      setMessages((messages) => [...messages, data]);
       inputMessage.current.value = "";
       setMsg("");
     }
@@ -49,6 +44,7 @@ const ChatBox = () => {
 
   return (
     <>
+      <Navbar messages={setMessages}/>
       <div className="wrapper">
         <div className="dim"></div>
         <div className="chat">
@@ -58,17 +54,6 @@ const ChatBox = () => {
           <div className="chatbox">
             <div className="messages-wrapper" style={{ overflowY: "auto" }}>
               <div className="status">Searching for a partner...</div>
-              <div className="you message">
-                <div className="avatar"></div>
-                <div className="name">{me}</div>
-                <div className="text">halooo nama saya bryan</div>
-              </div>
-              <div className="them message">
-                <div className="avatar"></div>
-                <div className="name">{them}</div>
-                <div className="text">hiii nama saya hunter</div>
-              </div>
-              {/* <ReactScrollbleFeed> */}
               {messages &&
                 messages.map((data) => {
                   return (
@@ -85,7 +70,6 @@ const ChatBox = () => {
                     </>
                   );
                 })}
-              {/* </ReactScrollbleFeed> */}
               <div ref={messageView} />
             </div>
           </div>
@@ -118,13 +102,6 @@ const ChatBox = () => {
           </div>
         </div>
       </div>
-      <button
-        onClick={() => {
-          console.log(messages);
-        }}
-      >
-        messages
-      </button>
     </>
   );
 };

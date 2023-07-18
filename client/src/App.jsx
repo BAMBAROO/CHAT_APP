@@ -5,6 +5,9 @@ import Register from "./components/Register/Register.jsx";
 import ChatPage from "./components/ChatPage/ChatPage.jsx";
 import AfterLogin from "./components/Middleware/AfterLogin.jsx";
 import BeforeLogin from "./components/Middleware/BeforeLogin.jsx";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:8000");
 
 function App() {
   return (
@@ -14,7 +17,7 @@ function App() {
           path="/"
           element={
             <BeforeLogin>
-              <Dashboard />
+              <Dashboard socket={socket}/>
             </BeforeLogin>
           }
         />
@@ -34,7 +37,7 @@ function App() {
             </AfterLogin>
           }
         />
-        <Route path="/private" element={<ChatPage />} />
+        <Route path="/private" element={<ChatPage socket={socket}/>} />
       </Routes>
     </BrowserRouter>
   );
