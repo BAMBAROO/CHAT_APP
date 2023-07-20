@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./ChatPage.scss";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 
 const ChatBox = (props) => {
@@ -12,7 +12,6 @@ const ChatBox = (props) => {
   const socket = props.socket;
   const inputMessage = useRef();
   const messageView = useRef();
-  const navigate = useNavigate();
 
   let count = 0;
 
@@ -20,7 +19,7 @@ const ChatBox = (props) => {
     count = count + 1;
     if (count == 2) {
       socket.on(me, (data) => {
-        setMessages((messageBaru) => [...messageBaru, data])
+        setMessages((messageBaru) => [...messageBaru, data]);
       });
     }
   }, []);
@@ -44,7 +43,7 @@ const ChatBox = (props) => {
 
   return (
     <>
-      <Navbar messages={setMessages}/>
+      <Navbar messages={setMessages} />
       <div className="wrapper">
         <div className="dim"></div>
         <div className="chat">

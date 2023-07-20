@@ -12,7 +12,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:5173",
+    origin: "http://localhost:3000",
   })
 );
 
@@ -54,8 +54,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", (dari, ke, pesan) => {
-    console.log({ dari, ke, pesan });
-    socket.broadcast.emit(ke, pesan);
+    socket.broadcast.emit(ke, pesan, dari);
   });
 
   socket.on("disconnect", () => {

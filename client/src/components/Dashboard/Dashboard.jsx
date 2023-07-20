@@ -8,7 +8,8 @@ import Navbar from "../Navbar/Navbar.jsx";
 
 function Dashboard(props) {
   const [visitors, setVisitors] = useState([]);
-  const socket = props.socket;
+  const socket = props?.socket;
+  const [name, setName] = useState('')
 
   const navigate = useNavigate();
   let count = 0;
@@ -27,6 +28,7 @@ function Dashboard(props) {
   }, []);
 
   function getInfo(decoded) {
+    setName(decoded.name)
     axios.get("http://geoplugin.net/json.gp").then(async (res) => {
       const data = {
         name: decoded.name,
@@ -41,6 +43,9 @@ function Dashboard(props) {
         data.ip !== undefined
       ) {
         socket.emit("new_visitor", data);
+        socket.on(data.name,(data) => {
+          console.log(data)
+        })
       }
     });
   }
@@ -65,10 +70,10 @@ function Dashboard(props) {
     if (token.name === to) {
       return alert("this is you");
     }
-    navigate('/private', {
+    navigate("/private", {
       state: {
-        from:token.name,
-        to:to
+        from: token.name,
+        to: to,
       },
     });
   }
@@ -93,8 +98,10 @@ function Dashboard(props) {
 
   return (
     <>
-      <Navbar logout={logout} refreshToken={refreshToken} socket={socket}/>
-      <span className="contact-name" style={{color:"red"}}>live visitors</span>
+      <Navbar logout={logout} refreshToken={refreshToken} socket={socket} />
+      <span className="contact-name" style={{ color: "red" }}>
+        live visitors
+      </span>
       <hr />
       <ul className="contact-list">
         {visitors &&
@@ -120,13 +127,10 @@ function Dashboard(props) {
             </li>
           ))}
       </ul>
-      <h1>Home</h1>
-      <button
-        onClick={() => {
-          refreshToken("getFriends");
-        }}
-      >
-        friends
+      <button onClick={() => {
+        new Notification("haloo ini notifikasi")
+      }}>
+        Click Me
       </button>
     </>
   );

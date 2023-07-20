@@ -17,7 +17,7 @@ function App() {
           path="/"
           element={
             <BeforeLogin>
-              <Dashboard socket={socket}/>
+              <Dashboard socket={socket} />
             </BeforeLogin>
           }
         />
@@ -37,7 +37,14 @@ function App() {
             </AfterLogin>
           }
         />
-        <Route path="/private" element={<ChatPage socket={socket}/>} />
+        <Route
+          path="/private"
+          element={
+            <BeforeLogin>
+              <ChatPage socket={socket} />
+            </BeforeLogin>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
