@@ -1,9 +1,29 @@
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 function Navbar(props) {
   const socket = props?.socket;
-  const logout = props?.logout;
   const navigate = useNavigate();
+
+  function logout() {
+    const config = {
+      withCredentials: true,
+    };
+    axios.delete("http://localhost:8000/logout", config).then((res) => {
+      console.log(res);
+      if (res?.statusText === "OK") {
+        Cookies.remove("logged");
+        navigate("/login");
+      }
+      if (res.response?.statusText) {
+        alert("something went wrong, please relog!");
+        Cookies.remove("logged");
+        navigate("/login");
+      }
+    });
+  }
+
   return (
     <>
       <nav className="navbar" style={{ marginBottom: "10px" }}>

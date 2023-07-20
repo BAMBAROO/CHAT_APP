@@ -38,7 +38,6 @@ function visitors() {
 
 function emitVisitors() {
   const users = visitors().filter((data) => data !== undefined);
-  console.log(users);
   if (users.length != 0) {
     io.emit("visitors", users);
   }
@@ -47,7 +46,6 @@ function emitVisitors() {
 io.on("connection", (socket) => {
   socket.on("new_visitor", (arg) => {
     if (arg !== undefined) {
-      console.log("halo");
       socket.user = arg;
       emitVisitors();
     }
@@ -59,7 +57,6 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     emitVisitors();
-    console.log("someone just disconnect");
   });
 });
 

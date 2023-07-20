@@ -72,7 +72,6 @@ function Dashboard(props) {
           if (res.statusText === "Forbidden") {
             logout();
           }
-          socket.off(jwt_decode(res.data.accessToken).name);
           privateChat(jwt_decode(res.data.accessToken), to);
         } else if (code === "getInfo") {
           getInfo(jwt_decode(res.data.accessToken));
@@ -85,6 +84,7 @@ function Dashboard(props) {
     if (token.name === to) {
       return alert("this is you");
     }
+    socket.off(token.name)
     navigate("/private", {
       state: {
         from: token.name,
@@ -114,7 +114,7 @@ function Dashboard(props) {
 
   return (
     <>
-      <Navbar logout={logout} refreshToken={refreshToken} socket={socket} />
+      <Navbar refreshToken={refreshToken} socket={socket} />
       <div className="toast" ref={toast}>
         <div className="toast-content">
           <i className="fas fa-solid fa-check check"></i>
