@@ -43,8 +43,8 @@ function Dashboard(props) {
         data.ip !== undefined
       ) {
         socket.emit("new_visitor", data);
-        socket.on(data.name,(data) => {
-          console.log(data)
+        socket.on(data,(data) => {
+          console.log(data.from)
         })
       }
     });
