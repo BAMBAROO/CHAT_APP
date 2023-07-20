@@ -2,6 +2,10 @@
 * {
   font-family: "Roboto", sans-serif;
 }
+
+body {
+  overflow: hidden;
+}
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -101,4 +105,86 @@
 
 .chat-button:hover {
   background-color: #45a049;
+}
+
+.toast {
+  position: absolute;
+  top: 25px;
+  right: 30px;
+  border-radius: 12px;
+  background: #fff;
+  padding: 20px 35px 20px 25px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid #666;
+  overflow: hidden;
+  transform: translateX(calc(100% + 30px));
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+}
+
+.toast.active {
+  transform: translateX(0%);
+}
+
+.toast .toast-content {
+  display: flex;
+  align-items: center;
+}
+
+.toast-content .check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  background-color: #fff;
+  color: #666;
+  font-size: 20px;
+  border-radius: 50%;
+}
+
+.toast-content .message1 {
+  display: flex;
+  flex-direction: column;
+  margin: 0 20px;
+}
+
+.message1 .text1 {
+  font-size: 15px;
+  font-weight: 400;
+  ;
+  color: #666666;
+}
+
+.message1 .text1.text-1 {
+  font-weight: 600;
+  color: #333;
+}
+
+.toast .progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: #ddd;
+}
+
+.toast .progress:before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #666;
+}
+
+.progress.active:before {
+  animation: progress 2s linear forwards;
+}
+
+@keyframes progress {
+  100% {
+    right: 100%;
+  }
 }

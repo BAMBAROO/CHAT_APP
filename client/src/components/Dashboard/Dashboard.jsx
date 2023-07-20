@@ -1,6 +1,6 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./Dashboard.css";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,11 @@ import Navbar from "../Navbar/Navbar.jsx";
 function Dashboard(props) {
   const [visitors, setVisitors] = useState([]);
   const socket = props?.socket;
-  const [name, setName] = useState('')
+
+  const toast = useRef();
+  const progress = useRef();
+  const notifTitle = useRef();
+  const notifMessage = useRef();
 
   const navigate = useNavigate();
   let count = 0;
@@ -28,7 +32,6 @@ function Dashboard(props) {
   }, []);
 
   function getInfo(decoded) {
-    setName(decoded.name)
     axios.get("http://geoplugin.net/json.gp").then(async (res) => {
       const data = {
         name: decoded.name,
@@ -43,9 +46,19 @@ function Dashboard(props) {
         data.ip !== undefined
       ) {
         socket.emit("new_visitor", data);
-        socket.on(data,(data) => {
-          console.log(data.from)
-        })
+        socket.on(data.name, (data) => {
+          console.log(data);
+          notifTitle.current.textContent = `${data.from}`
+          notifMessage.current.textContent = `${data.message}`
+          toast.current.classList.add("active");
+          progress.current.classList.add("active");
+          setTimeout(() => {
+            toast.current.classList.remove("active");
+          }, 2000);
+          setTimeout(() => {
+            progress.current.classList.remove("active");
+          }, 2300);
+        });
       }
     });
   }
@@ -99,6 +112,20 @@ function Dashboard(props) {
   return (
     <>
       <Navbar logout={logout} refreshToken={refreshToken} socket={socket} />
+      <div className="toast" ref={toast}>
+        <div className="toast-content">
+          <i className="fas fa-solid fa-check check"></i>
+
+          <div className="message1">
+            <span className="text1 text-1" ref={notifTitle}>Notification</span>
+            <span className="text1 text-2" ref={notifMessage}>
+              You have some message from Bruce
+            </span>
+          </div>
+        </div>
+
+        <div className="progress" ref={progress}></div>
+      </div>
       <span className="contact-name" style={{ color: "red" }}>
         live visitors
       </span>
@@ -127,11 +154,6 @@ function Dashboard(props) {
             </li>
           ))}
       </ul>
-      <button onClick={() => {
-        new Notification("haloo ini notifikasi")
-      }}>
-        Click Me
-      </button>
     </>
   );
 }
