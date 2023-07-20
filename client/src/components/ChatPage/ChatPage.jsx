@@ -57,13 +57,14 @@ const ChatBox = (props) => {
             <div className="messages-wrapper" style={{ overflowY: "auto" }}>
               <div className="status">Searching for a partner...</div>
               {messages &&
-                messages.map((data) => {
+                messages.map((data, index) => {
                   return (
                     <>
                       <div
                         className={
                           data.from === me ? "you message" : "them message"
                         }
+                        key={index}
                       >
                         <div className="avatar"></div>
                         <div className="name">{data.from}</div>

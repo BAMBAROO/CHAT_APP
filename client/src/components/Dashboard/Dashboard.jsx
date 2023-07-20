@@ -9,7 +9,6 @@ import Navbar from "../Navbar/Navbar.jsx";
 function Dashboard(props) {
   const [visitors, setVisitors] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [toggle, setToggle] = useState('true');
   const socket = props?.socket;
 
   const toast = useRef();
@@ -23,7 +22,6 @@ function Dashboard(props) {
   useEffect(() => {
     count++;
     if (count == 2) {
-      toggle === "false" ? setToggle("true") : setToggle("true");
       refreshToken("getInfo");
       if (socket.connected == false) {
         socket.connect();
@@ -50,20 +48,17 @@ function Dashboard(props) {
       ) {
         socket.emit("new_visitor", data);
         socket.on(data.name, (data) => {
-          if (toggle === "true") {
-            console.log(toggle);
-            setMessages((messages) => [...messages, data]);
-            notifTitle.current.textContent = `${data.from}`;
-            notifMessage.current.textContent = `${data.message}`;
-            toast.current.classList.add("active");
-            progress.current.classList.add("active");
-            setTimeout(() => {
-              toast.current.classList.remove("active");
-            }, 2000);
-            setTimeout(() => {
-              progress.current.classList.remove("active");
-            }, 2300);
-          }
+          setMessages((messages) => [...messages, data]);
+          notifTitle.current.textContent = `${data.from}`;
+          notifMessage.current.textContent = `${data.message}`;
+          toast.current.classList.add("active");
+          progress.current.classList.add("active");
+          setTimeout(() => {
+            toast.current.classList.remove("active");
+          }, 2000);
+          setTimeout(() => {
+            progress.current.classList.remove("active");
+          }, 2300);
         });
       }
     });
@@ -77,7 +72,7 @@ function Dashboard(props) {
           if (res.statusText === "Forbidden") {
             logout();
           }
-          setToggle(false);
+          socket.off(jwt_decode(res.data.accessToken).name);
           privateChat(jwt_decode(res.data.accessToken), to);
         } else if (code === "getInfo") {
           getInfo(jwt_decode(res.data.accessToken));
@@ -170,7 +165,7 @@ function Dashboard(props) {
       </ul>
       <button
         onClick={() => {
-          setToggle("false")
+          console.log(messages)
         }}
       >
         toggle

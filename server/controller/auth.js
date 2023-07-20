@@ -84,34 +84,9 @@ export const logout = async (req, res) => {
     }
     user.refrehToken = "";
     await user.save();
-    // res.clearCookie("refreshToken");
-    // res.clearCookie("io");
     res.status(200).json({ message: "logout success" });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "something went wrong" });
   }
 };
-
-// export const addFriends = async (req, res) => {
-//   try {
-//     const { name, friend } = req.body;
-//     console.log({ name }, { friend });
-//     const user = await User.findOne({ name: name });
-//     const userFriend = await User.findOne({ name: friend });
-//     if (!userFriend || !user) {
-//       return res.status(404).json({ message: "user not found" });
-//     }
-//     const exist = user.friends.find((name) => name.name === friend);
-//     console.log({ exist });
-//     if (exist) return res.status(204).json({ message: "already done" });
-//     console.log({ user });
-//     user.friends.push({ name: userFriend.name });
-//     await user.save();
-//     res.status(203).json({ message: "on testing" });
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ message: "something went wrong" });
-//   }
-// };
-
