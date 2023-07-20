@@ -60,7 +60,7 @@ body {
   display: flex;
   align-items: center;
   padding: 10px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .contact-info {
@@ -74,7 +74,7 @@ body {
 }
 
 .contact-location {
-  color: #777;
+  color: #d3d3d3;
   font-size: 14px;
   margin-top: 5px;
 }

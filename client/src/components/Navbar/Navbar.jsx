@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
 function Navbar(props) {
-  const socket = props.socket;
-  const logout = props.logout;
-  const setMessages = props?.messages
+  const socket = props?.socket;
+  const logout = props?.logout;
   const navigate = useNavigate();
   return (
     <>
@@ -14,8 +13,8 @@ function Navbar(props) {
             <li>
               <a
                 onClick={() => {
-                  setMessages([])
                   navigate("/");
+                  window.location.reload();
                 }}
               >
                 Dashboard

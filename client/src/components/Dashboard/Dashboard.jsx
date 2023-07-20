@@ -8,6 +8,8 @@ import Navbar from "../Navbar/Navbar.jsx";
 
 function Dashboard(props) {
   const [visitors, setVisitors] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [toggle, setToggle] = useState('true');
   const socket = props?.socket;
 
   const toast = useRef();
@@ -21,6 +23,7 @@ function Dashboard(props) {
   useEffect(() => {
     count++;
     if (count == 2) {
+      toggle === "false" ? setToggle("true") : setToggle("true");
       refreshToken("getInfo");
       if (socket.connected == false) {
         socket.connect();
@@ -47,17 +50,20 @@ function Dashboard(props) {
       ) {
         socket.emit("new_visitor", data);
         socket.on(data.name, (data) => {
-          console.log(data);
-          notifTitle.current.textContent = `${data.from}`
-          notifMessage.current.textContent = `${data.message}`
-          toast.current.classList.add("active");
-          progress.current.classList.add("active");
-          setTimeout(() => {
-            toast.current.classList.remove("active");
-          }, 2000);
-          setTimeout(() => {
-            progress.current.classList.remove("active");
-          }, 2300);
+          if (toggle === "true") {
+            console.log(toggle);
+            setMessages((messages) => [...messages, data]);
+            notifTitle.current.textContent = `${data.from}`;
+            notifMessage.current.textContent = `${data.message}`;
+            toast.current.classList.add("active");
+            progress.current.classList.add("active");
+            setTimeout(() => {
+              toast.current.classList.remove("active");
+            }, 2000);
+            setTimeout(() => {
+              progress.current.classList.remove("active");
+            }, 2300);
+          }
         });
       }
     });
@@ -71,6 +77,7 @@ function Dashboard(props) {
           if (res.statusText === "Forbidden") {
             logout();
           }
+          setToggle(false);
           privateChat(jwt_decode(res.data.accessToken), to);
         } else if (code === "getInfo") {
           getInfo(jwt_decode(res.data.accessToken));
@@ -87,6 +94,7 @@ function Dashboard(props) {
       state: {
         from: token.name,
         to: to,
+        messages: messages,
       },
     });
   }
@@ -117,7 +125,9 @@ function Dashboard(props) {
           <i className="fas fa-solid fa-check check"></i>
 
           <div className="message1">
-            <span className="text1 text-1" ref={notifTitle}>Notification</span>
+            <span className="text1 text-1" ref={notifTitle}>
+              Notification
+            </span>
             <span className="text1 text-2" ref={notifMessage}>
               You have some message from Bruce
             </span>
@@ -126,14 +136,18 @@ function Dashboard(props) {
 
         <div className="progress" ref={progress}></div>
       </div>
-      <span className="contact-name" style={{ color: "red" }}>
+      <span className="contact-name" style={{ color: "#ffc107" }}>
         live visitors
       </span>
       <hr />
       <ul className="contact-list">
         {visitors &&
           visitors.map((contact, index) => (
-            <li key={index} className="contact-list-item">
+            <li
+              key={index}
+              className="contact-list-item"
+              style={{ backgroundColor: "#999" }}
+            >
               <div className="contact-info">
                 <span className="contact-name">{contact.name}</span>
                 <div className="contact-location">
@@ -154,6 +168,13 @@ function Dashboard(props) {
             </li>
           ))}
       </ul>
+      <button
+        onClick={() => {
+          setToggle("false")
+        }}
+      >
+        toggle
+      </button>
     </>
   );
 }
