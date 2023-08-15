@@ -64,12 +64,6 @@ mongoose
   .connect(process.env.MONGO_URI, { dbName: "user_account" })
   .then(async () => {
     console.log("berhasil terkoneksi ke database");
-    // await User.create({
-    //   name: "bryan",
-    //   email: "bryan@gmail.com",
-    //   password: "bryan",
-    //   refreshToken: "",
-    // });
     server.listen(8000, () => {
       console.log("running at port 8000");
     });
