@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState   } from "react";
+import {useEffect, useRef, useState} from "react";
 import "./ChatPage.scss";
-import { useLocation } from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 
 const ChatBox = (props) => {
@@ -46,7 +46,7 @@ const ChatBox = (props) => {
 
   return (
     <>
-      <Navbar messages={setMessages} />
+      <Navbar messages={setMessages} socket={socket}/>
       <div className="wrapper">
         <div className="dim"></div>
         <div className="chat">
@@ -54,8 +54,8 @@ const ChatBox = (props) => {
             Welcome! Remember to be kind to others&hellip;
           </div>
           <div className="chatbox">
-            <div className="messages-wrapper" style={{ overflowY: "auto" }}>
-              <div className="status">Searching for a partner...</div>
+            <div className="messages-wrapper" style={{overflowY: "auto"}}>
+              <div className="status">BAMBAROO CHAT APP</div>
               {messages &&
                 messages.map((data, index) => {
                   return (
@@ -73,7 +73,7 @@ const ChatBox = (props) => {
                     </>
                   );
                 })}
-              <div ref={messageView} />
+              <div ref={messageView}/>
             </div>
           </div>
           <div className="reply">

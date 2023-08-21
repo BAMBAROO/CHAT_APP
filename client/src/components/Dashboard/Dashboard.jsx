@@ -163,13 +163,6 @@ function Dashboard(props) {
             </li>
           ))}
       </ul>
-      <button
-        onClick={() => {
-          console.log(messages)
-        }}
-      >
-        toggle
-      </button>
     </>
   );
 }

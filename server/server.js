@@ -5,30 +5,31 @@ import cookieParser from "cookie-parser";
 import http from "http";
 import mongoose from "mongoose";
 import cors from "cors";
-import User from "./model/Users.js";
 import router from "./routes/router.js";
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
 
+// configuration
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3000",
+    origin: process.env.END_POINT,
   })
 );
 
+// router
 app.use(router);
 
+// getting all connected users and returning all connected users
 function visitors() {
   const client = io.sockets.clients().connected;
   const socket = Object.values(client);
@@ -36,8 +37,10 @@ function visitors() {
   return users;
 }
 
+// emit live visitors or emit all users are connected
 function emitVisitors() {
   const users = visitors().filter((data) => data !== undefined);
+  console.log(users)
   if (users.length != 0) {
     io.emit("visitors", users);
   }
@@ -51,26 +54,23 @@ io.on("connection", (socket) => {
     }
   });
 
+  // listening to message come
   socket.on("message", (dari, ke, pesan) => {
     socket.broadcast.emit(ke, pesan, dari);
   });
 
+  // listening to disconnect user
   socket.on("disconnect", () => {
     emitVisitors();
   });
 });
 
+//connection to database
 mongoose
-  .connect(process.env.MONGO_URI, { dbName: "user_account" })
+  .connect(process.env.MONGO_URI, {dbName: "user_account"})
   .then(async () => {
-    console.log("berhasil terkoneksi ke database");
-    // await User.create({
-    //   name: "bryan",
-    //   email: "bryan@gmail.com",
-    //   password: "bryan",
-    //   refreshToken: "",
-    // });
-    server.listen(8000, () => {
+    console.log("connected to database");
+    server.listen(process.env.PORT || 8000, () => {
       console.log("running at port 8000");
     });
   })

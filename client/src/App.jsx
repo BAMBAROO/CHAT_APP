@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Dashboard from "./components/Dashboard/Dashboard.jsx";
 import Login from "./components/Login/Login.jsx";
 import Register from "./components/Register/Register.jsx";
@@ -17,7 +17,7 @@ function App() {
           path="/"
           element={
             <BeforeLogin>
-              <Dashboard socket={socket} />
+              <Dashboard socket={socket}/>
             </BeforeLogin>
           }
         />
@@ -25,7 +25,7 @@ function App() {
           path="/login"
           element={
             <AfterLogin>
-              <Login />
+              <Login/>
             </AfterLogin>
           }
         />
@@ -33,7 +33,7 @@ function App() {
           path="/register"
           element={
             <AfterLogin>
-              <Register />
+              <Register/>
             </AfterLogin>
           }
         />
@@ -41,7 +41,7 @@ function App() {
           path="/private"
           element={
             <BeforeLogin>
-              <ChatPage socket={socket} />
+              <ChatPage socket={socket}/>
             </BeforeLogin>
           }
         />
