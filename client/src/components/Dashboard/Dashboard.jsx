@@ -66,7 +66,7 @@ function Dashboard(props) {
 
   function refreshToken(code, to) {
     axios
-      .get("http://localhost:8000/token", { withCredentials: true })
+      .get("http://localhost:5000/token", { withCredentials: true })
       .then((res) => {
         if (code === "privateChat") {
           if (res.statusText === "Forbidden") {
@@ -98,7 +98,7 @@ function Dashboard(props) {
     const config = {
       withCredentials: true,
     };
-    axios.delete("http://localhost:8000/logout", config).then((res) => {
+    axios.delete("http://localhost:5000/logout", config).then((res) => {
       console.log(res);
       if (res.statusText === "OK") {
         Cookies.remove("logged");

@@ -67,6 +67,7 @@ export const login = async (req, res) => {
     });
     res.status(200).json({accessToken});
   } catch (err) {
+    console.log(err);
     return res.status(500).json({message: "something went wrong "});
   }
 };

@@ -30,7 +30,7 @@ const Register = () => {
       withCredentials: true,
     };
     axios
-      .post("http://localhost:8000/register", data, config)
+      .post("http://localhost:5000/register", data, config)
       .then((res) => {
         console.log({ res });
         if (res.statusText === "Created") {

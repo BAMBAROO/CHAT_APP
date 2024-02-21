@@ -10,7 +10,7 @@ function Navbar(props) {
     const config = {
       withCredentials: true,
     };
-    axios.delete("http://localhost:8000/logout", config).then((res) => {
+    axios.delete("http://localhost:5000/logout", config).then((res) => {
       if (res?.statusText === "OK") {
         Cookies.remove("logged");
         navigate("/login");

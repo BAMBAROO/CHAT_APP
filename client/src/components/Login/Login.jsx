@@ -26,14 +26,17 @@ const Login = () => {
       withCredentials: true,
     };
     axios
-      .post("http://localhost:8000/login", data, config)
+      .post("http://localhost:5000/login", data, config)
       .then((res) => {
         if (res.statusText === "OK") {
           Cookies.set("logged", "OK");
           navigate("/");
         }
       })
-      .catch((error) => alert(error.response.data.message));
+      .catch((error) => {
+        console.log(error)
+        alert(error.response.data.message)
+      });
   };
 
   return (

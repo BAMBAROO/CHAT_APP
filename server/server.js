@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import router from "./routes/router.js";
 
+const port = process.env.PORT || 5000;
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -41,7 +42,7 @@ function visitors() {
 function emitVisitors() {
   const users = visitors().filter((data) => data !== undefined);
   console.log(users)
-  if (users.length != 0) {
+  if (users.length !== 0) {
     io.emit("visitors", users);
   }
 }
@@ -70,8 +71,8 @@ mongoose
   .connect(process.env.MONGO_URI, {dbName: "user_account"})
   .then(async () => {
     console.log("connected to database");
-    server.listen(process.env.PORT || 8000, () => {
-      console.log("running at port 8000");
+    server.listen(port, () => {
+      console.log(`running at port ${port}`);
     });
   })
   .catch((error) => {
