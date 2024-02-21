@@ -26,7 +26,7 @@ const Login = () => {
       withCredentials: true,
     };
     axios
-      .post("http://localhost:5000/login", data, config)
+      .post('http://13.250.35.70:5000/login', data, config)
       .then((res) => {
         if (res.statusText === "OK") {
           Cookies.set("logged", "OK");
