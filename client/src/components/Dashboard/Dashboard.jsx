@@ -17,16 +17,19 @@ function Dashboard(props) {
   const notifMessage = useRef();
 
   const navigate = useNavigate();
-  let count = 0;
+  // let count = 0;
 
   useEffect(() => {
-    count++;
-    if (count == 2) {
+    console.log('useEffect');
+    // count++;
+    // console.log(count);
+    // if (count === 2) {
+      console.log("counted 2");
       refreshToken("getInfo");
-      if (socket.connected == false) {
+      if (socket.connected === false) {
         socket.connect();
       }
-    }
+    // }
     socket.on("visitors", (res) => {
       setVisitors(res);
     });
@@ -40,12 +43,14 @@ function Dashboard(props) {
         city: res.data.geoplugin_city,
         ip: res.data.geoplugin_request,
       };
+      console.log(res.data);
       if (
         data.name !== undefined &&
         data.country !== undefined &&
         data.city !== undefined &&
         data.ip !== undefined
       ) {
+        console.log(data);
         socket.emit("new_visitor", data);
         socket.on(data.name, (data) => {
           setMessages((messages) => [...messages, data]);
@@ -66,7 +71,7 @@ function Dashboard(props) {
 
   function refreshToken(code, to) {
     axios
-      .get('http://13.250.35.70:5000/token', { withCredentials: true })
+      .get('http://localhost:8000/token', { withCredentials: true })
       .then((res) => {
         if (code === "privateChat") {
           if (res.statusText === "Forbidden") {
@@ -74,6 +79,7 @@ function Dashboard(props) {
           }
           privateChat(jwt_decode(res.data.accessToken), to);
         } else if (code === "getInfo") {
+          console.log('getinfo');
           getInfo(jwt_decode(res.data.accessToken));
         }
       })
@@ -98,7 +104,7 @@ function Dashboard(props) {
     const config = {
       withCredentials: true,
     };
-    axios.delete('http://13.250.35.70:5000/logout', config).then((res) => {
+    axios.delete('http://localhost:8000/logout', config).then((res) => {
       console.log(res);
       if (res.statusText === "OK") {
         Cookies.remove("logged");

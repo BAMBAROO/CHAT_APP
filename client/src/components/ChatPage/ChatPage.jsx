@@ -14,17 +14,17 @@ const ChatBox = (props) => {
   const inputMessage = useRef();
   const messageView = useRef();
 
-  let count = 0;
+  // let count = 0;
 
   useEffect(() => {
     console.log(prevMessages)
-    count = count + 1;
-    if (count == 2) {
+    // count = count + 1;
+    // if (count == 2) {
       setMessages(prevMessages)
       socket.on(me, (data) => {
         setMessages((messageBaru) => [...messageBaru, data]);
       });
-    }
+    // }
   }, []);
 
   useEffect(() => {

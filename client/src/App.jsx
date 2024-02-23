@@ -7,7 +7,7 @@ import AfterLogin from "./components/Middleware/AfterLogin.jsx";
 import BeforeLogin from "./components/Middleware/BeforeLogin.jsx";
 import io from "socket.io-client";
 
-const socket = io('http://13.250.35.70:5000/');
+const socket = io('http://localhost:8000');
 
 function App() {
   return (
